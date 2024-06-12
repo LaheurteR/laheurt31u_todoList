@@ -9,9 +9,10 @@ class Task
   String? id;
   String titre = '';
   bool completed = false;
-  Task({required String t, String? id, completed = false}) : id = id??uuid.v4()
+  Task({required String t, String? id, this.completed = false}) : id = id??uuid.v4()
   {
     titre = t;
+
   }
 
   @override
