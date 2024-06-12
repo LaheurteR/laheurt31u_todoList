@@ -9,9 +9,18 @@ class TodoListApp extends StatelessWidget {
         home: Scaffold(
           appBar: AppBar(
             title: const Center(
-              child: Text("Todo list"),
+              child: Text("ToDo List"),
             ),
           ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: (){
+
+            },
+            backgroundColor: Colors.blue,
+            child:
+            const Icon(Icons.add),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     ));
   }
 }
