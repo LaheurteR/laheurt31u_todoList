@@ -5,7 +5,13 @@ class TodoListApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Todo list', home: Scaffold(
+    return MaterialApp(title: 'Todo list',
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Center(
+              child: Text("Todo list"),
+            ),
+          ),
     ));
   }
 }
