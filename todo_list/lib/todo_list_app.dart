@@ -7,6 +7,8 @@ class TodoListApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const MaterialApp(
       title: 'ToDo App',
+      debugShowCheckedModeBanner: false,
+      debugShowMaterialGrid: false,
       home: TasksMaster(),
     );
 }

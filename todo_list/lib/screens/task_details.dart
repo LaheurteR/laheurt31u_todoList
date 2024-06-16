@@ -31,7 +31,7 @@ class _TaskDetailsState extends State<TaskDetails> {
       return "Non";
     }
   }
-  
+
   void _showAlertDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -131,13 +131,13 @@ class _TaskDetailsState extends State<TaskDetails> {
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _saveTask,
-                    child: const Text('Enregistrer'),
-                  )
                 ],
               ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveTask,
+                child: const Text('Enregistrer'),
+              )
             ],
           ),
         ),
