@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/task.dart';
-import 'package:todo_list/task_service.dart';
+import 'package:todo_list/widgets/task_preview.dart';
+import 'package:todo_list/services/task_service.dart';
 
 class TasksMaster extends StatefulWidget {
   const TasksMaster({super.key});
@@ -32,47 +33,12 @@ class _TasksMasterState extends State<TasksMaster> {
                 itemCount: tasks.length,
                 itemBuilder: (context, index) {
                   Task task = tasks[index];
-                  return TaskTile(task: task);
+                  return TaskPreview(task: task);
                 },
               );
             }
           },
         ),
-      ),
-    );
-  }
-}
-
-class TaskTile extends StatefulWidget {
-  final Task task;
-
-  const TaskTile({super.key, required this.task});
-
-  @override
-  State<TaskTile> createState() => _TaskTileState();
-}
-
-class _TaskTileState extends State<TaskTile> {
-  late bool _isChecked;
-
-  @override
-  void initState() {
-    super.initState();
-    _isChecked = widget.task.completed;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(widget.task.titre),
-      trailing: Checkbox(
-        value: _isChecked,
-        onChanged: (value) {
-          setState(() {
-            _isChecked = value!;
-            widget.task.completed = value;
-          });
-        },
       ),
     );
   }

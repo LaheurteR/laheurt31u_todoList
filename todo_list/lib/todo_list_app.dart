@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/tasks_master.dart';
+import 'package:todo_list/screens/tasks_master.dart';
 
 class TodoListApp extends StatelessWidget {
   const TodoListApp({super.key});
