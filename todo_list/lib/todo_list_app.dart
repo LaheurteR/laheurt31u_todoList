@@ -5,7 +5,8 @@ class TodoListApp extends StatelessWidget {
   const TodoListApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return TasksMaster();
-  }
+  Widget build(BuildContext context) => const MaterialApp(
+      title: 'ToDo App',
+      home: TasksMaster(),
+    );
 }

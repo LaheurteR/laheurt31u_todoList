@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/screens/task_form.dart';
 import 'package:todo_list/task.dart';
 import 'package:todo_list/widgets/task_preview.dart';
 import 'package:todo_list/services/task_service.dart';
@@ -11,6 +12,10 @@ class TasksMaster extends StatefulWidget {
 }
 
 class _TasksMasterState extends State<TasksMaster> {
+  void updateTasks() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,7 +24,7 @@ class _TasksMasterState extends State<TasksMaster> {
           title: const Text('Task List'),
         ),
         body: FutureBuilder<List<Task>>(
-          future: TaskService().fetchTasks(),
+          future: TaskService.fetchTasks(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -39,6 +44,16 @@ class _TasksMasterState extends State<TasksMaster> {
             }
           },
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TaskForm(updateTasks: updateTasks)),
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
   }
