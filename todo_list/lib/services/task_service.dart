@@ -23,4 +23,9 @@ class TaskService {
   static void createTask(Task t) async {
     taskenr.add(t);
   }
+
+  static void deleteTask(Task t)
+  {
+    taskenr.remove(t);
+  }
 }

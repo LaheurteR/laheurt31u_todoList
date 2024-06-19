@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list/providers/tasks_provider.dart';
 import 'package:todo_list/screens/task_form.dart';
 import 'package:todo_list/task.dart';
 import 'package:todo_list/widgets/task_preview.dart';
-import 'package:todo_list/services/task_service.dart';
 
 class TasksMaster extends StatefulWidget {
   const TasksMaster({super.key});
@@ -12,32 +13,35 @@ class TasksMaster extends StatefulWidget {
 }
 
 class _TasksMasterState extends State<TasksMaster> {
+
+  bool firstLoad = true;
+
   void updateTasks() {
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    TasksProvider taskP = Provider.of<TasksProvider>(context);
+    if (firstLoad)
+      {
+        taskP.initTasks();
+        firstLoad = false;
+      }
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Task List'),
         ),
-        body: FutureBuilder<List<Task>>(
-          future: TaskService.fetchTasks(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+        body: Consumer<TasksProvider>(
+          builder: (context, taskProvider, child) {
+            if (taskProvider.tasks.isEmpty) {
               return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No tasks found'));
             } else {
-              List<Task> tasks = snapshot.data!;
               return ListView.builder(
-                itemCount: tasks.length,
+                itemCount: taskProvider.tasks.length,
                 itemBuilder: (context, index) {
-                  Task task = tasks[index];
+                  final Task task = taskProvider.tasks[index];
                   return TaskPreview(task: task);
                 },
               );
@@ -48,7 +52,7 @@ class _TasksMasterState extends State<TasksMaster> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TaskForm(updateTasks: updateTasks)),
+              MaterialPageRoute(builder: (context) => const TaskForm(type: Type.add, t: null,)),
             );
           },
           child: const Icon(Icons.add),

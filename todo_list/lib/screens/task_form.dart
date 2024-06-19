@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/services/task_service.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list/providers/tasks_provider.dart';
 import 'package:todo_list/task.dart';
 
-class TaskForm extends StatefulWidget {
-  final Function() updateTasks;
+enum Type { edit, add }
 
-  const TaskForm({required this.updateTasks, super.key});
+class TaskForm extends StatefulWidget {
+  final Type type;
+  final Task? t;
+
+  const TaskForm({required this.type, this.t, super.key});
+
+  Text initText() {
+    if (type == Type.edit) {
+      return const Text('Modification de la tâche');
+    } else {
+      return const Text('Ajout d\'une tâche');
+    }
+  }
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -14,12 +26,19 @@ class TaskForm extends StatefulWidget {
 class _TaskFormState extends State<TaskForm> {
   late TextEditingController _titreController;
   late TextEditingController _contentController;
+  late bool _isChecked;
 
   @override
   void initState() {
     super.initState();
     _titreController = TextEditingController(text: '');
     _contentController = TextEditingController(text: '');
+    _isChecked = false;
+    if (widget.type == Type.edit) {
+      _titreController.text = widget.t!.titre;
+      _contentController.text = widget.t!.content;
+      _isChecked = widget.t!.completed;
+    }
   }
 
   void _showAlertDialog(BuildContext context) {
@@ -53,11 +72,20 @@ class _TaskFormState extends State<TaskForm> {
     if (_titreController.text.isEmpty || _contentController.text.isEmpty) {
       _showAlertDialog(context);
     } else {
-      Task t = Task(t: _titreController.text, c: _contentController.text);
-      TaskService.createTask(t);
-      widget.updateTasks();
-      _showSnackBar(context, 'La tâche a bien été enregistrée');
+      if (widget.type == Type.add) {
+        Task t = Task(
+            t: _titreController.text,
+            c: _contentController.text,
+            completed: false);
+        Provider.of<TasksProvider>(context, listen: false).addTask(t);
+      } else {
+        widget.t!.titre = _titreController.text;
+        widget.t!.content = _contentController.text;
+        Provider.of<TasksProvider>(context, listen: false)
+            .updateTask(widget.t!);
+      }
       Navigator.pop(context);
+      _showSnackBar(context, 'La tâche a bien été enregistrée');
     }
   }
 
@@ -72,44 +100,64 @@ class _TaskFormState extends State<TaskForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nouvelle Tâche'),
+        title: widget.initText(),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const Text(
-                'Titre de la tâche :',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+            const Text(
+            'Titre de la tâche :',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            TextFormField(
+              controller: _titreController,
+              style: const TextStyle(fontSize: 18),
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
               ),
-              TextFormField(
-                controller: _titreController,
-                style: const TextStyle(fontSize: 18),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Contenu de la tâche :',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            TextFormField(
+              controller: _contentController,
+              style: const TextStyle(fontSize: 18),
+              maxLines: null,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Contenu de la tâche :',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Visibility(
+              visible: widget.type == Type.edit,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Complétée ? '),
+                    Checkbox(
+                      value: _isChecked,
+                      onChanged: (value) {
+                        setState(() {
+                          _isChecked = value ?? false;
+                          widget.t?.completed = value ?? false;
+                        });
+                      },
+                    ),
+                  ]
               ),
-              TextFormField(
-                controller: _contentController,
-                style: const TextStyle(fontSize: 18),
-                maxLines: null,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-              ),
+            ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _saveTask,
                 child: const Text('Enregistrer'),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

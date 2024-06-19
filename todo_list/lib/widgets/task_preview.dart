@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/screens/task_details.dart';
 import 'package:todo_list/task.dart';
+
+import '../screens/task_form.dart';
 
 class TaskPreview extends StatefulWidget {
   final Task task;
@@ -16,11 +17,11 @@ class TaskPreview extends StatefulWidget {
 class _TaskPreviewState extends State<TaskPreview> {
   late bool _isChecked;
 
-  ColorSwatch<int> changeColor() {
+  Color changeColor() {
     if (widget.task.completed == true) {
-      return Colors.green;
+      return Colors.green.shade400;
     } else {
-      return Colors.redAccent;
+      return Colors.white38;
     }
   }
 
@@ -57,8 +58,8 @@ class _TaskPreviewState extends State<TaskPreview> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => TaskDetails(
-                  task: widget.task, onUpdateTask: onUpdateTask)),
+              builder: (context) => TaskForm(type: Type.edit,
+                  t: widget.task)),
         );
       },
     );
