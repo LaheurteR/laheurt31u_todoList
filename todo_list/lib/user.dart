@@ -1,3 +1,4 @@
+import 'package:todo_list/task.dart';
 import 'package:uuid/uuid.dart';
 
 var uuid = const Uuid();
@@ -7,18 +8,19 @@ class User {
   String firstname = '';
   String lastname = '';
   String email = '';
-  String passwd = '';
+  String _passwd = '';
+  List<Task> tasks = [];
 
   User(String ln, String fn, String e, String pwd, String? id)
       : id = id ?? uuid.v4() {
     lastname = ln;
     firstname = fn;
     email = e;
-    passwd = pwd;
+    _passwd = pwd;
   }
 
   @override
   String toString() {
-    return 'User{id: $id, firstname: $firstname, lastname: $lastname, email: $email, passwd: $passwd}';
+    return 'User{id: $id, firstname: $firstname, lastname: $lastname, email: $email, passwd: $_passwd}';
   }
 }
